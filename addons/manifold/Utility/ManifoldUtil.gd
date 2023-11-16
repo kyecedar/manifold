@@ -58,7 +58,7 @@ static func get_history_dock() -> Control:
 
 
 
-static func get_text_cursors(node: TextEdit, cursors: Array[ManifoldTextCursor]) -> void:
+static func update_text_cursors(node: TextEdit, cursors: Array[ManifoldTextCursor]) -> void:
 	for i in node.get_caret_count():
 		cursors.push_back(ManifoldTextCursor.new(
 			Vector2i(
@@ -67,5 +67,3 @@ static func get_text_cursors(node: TextEdit, cursors: Array[ManifoldTextCursor])
 			),
 			node.get_selected_text(i).length()
 		))
-		pass
-	pass

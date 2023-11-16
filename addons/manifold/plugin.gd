@@ -5,6 +5,7 @@ const MainScreen : Resource = preload("res://addons/manifold/Editor/editor_view.
 
 var editor_screen : ManifoldPanelMain
 
+var _curr_script : GDScript
 var _curr_focus : Control
 var _last_focus : Control
 
@@ -41,7 +42,7 @@ func _enter_tree() -> void:
 	get_viewport().connect("gui_focus_changed", _on_editor_focus_change)
 	editor_screen = MainScreen.instantiate()
 	
-	get_editor_interface().get_editor_main_screen().add_child(editor_screen)
+	EditorInterface.get_editor_main_screen().add_child(editor_screen)
 	_make_visible(false)
 
 func _exit_tree() -> void:
@@ -69,17 +70,20 @@ func _make_visible(visible: bool) -> void:
 		editor_screen.visible = visible
 
 # https://ask.godotengine.org/6924/get-scene-tree-from-editor-plugin
-## When focus is changed in the Godot editor, this is called.
+## When focus is changed in the Godot editor, this is called.[br]
+## Used to connect listeners to the node in focus.
 func _on_editor_focus_change(node: Control) -> void:
 	_update_node_focus()
 	_handle_node_focus(node)
 	
-	print()
+	_curr_script = EditorInterface.get_script_editor().get_current_script()
+	
+	#print()
 	#print(EditorInterface.get_script_editor().find_children(""))
 	#print(node.get_node("../../..").name)
 	#print(EditorInterface.get_script_editor().get_current_editor())
 	#print(EditorInterface.get_script_editor().get_current_script().resource_name)
-	print(EditorInterface.get_script_editor().get_current_script().resource_path)
+	#print(EditorInterface.get_script_editor().get_current_script().resource_path)
 	#EditorInterface.get_file_system_dock().navigate_to_path(EditorInterface.get_script_editor().get_current_script().resource_path)
 	#print(EditorInterface.get_script_editor().get_open_scripts())
 	#print(EditorInterface.get_script_editor().get_path_to(node))
@@ -93,7 +97,6 @@ func _on_editor_focus_change(node: Control) -> void:
 	
 	if not node.is_connected("tree_exiting", _on_node_free):
 		node.connect("tree_exiting", _on_node_free)
-	pass
 
 func _on_node_free() -> void:
 	pass
@@ -146,6 +149,6 @@ func _update_cursors() -> void:
 		return
 	
 	_cursors.clear()
-	ManifoldUtil.get_text_cursors(_curr_focus, _cursors)
+	ManifoldUtil.update_text_cursors(_curr_focus, _cursors)
 
 #endregion 󰈈 EDITOR INTERACTION.
